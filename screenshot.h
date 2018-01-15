@@ -27,6 +27,9 @@ signals:
 
 public slots:
 protected:
+
+    void paintEvent(QPaintEvent *event);
+
     void mouseMoveEvent(QMouseEvent *event) override;
 
     void mousePressEvent(QMouseEvent *event) override;
@@ -41,7 +44,6 @@ private:
     QPoint endPoint;
     int weight;
     int height;
-    void (*callBackfunc)(int x, int y, int w, int h);
 };
 
 #endif // SCREENSHOT_H

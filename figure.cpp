@@ -5,6 +5,7 @@ Figure::Figure(QPointF point, QObject *parent) : QObject(parent), QGraphicsItem(
 {
     this->setStartPoint(mapFromScene(point));
     this->setEndPoint(mapFromScene(point));
+    setFlags(ItemIsSelectable|ItemSendsGeometryChanges);
 
     connect(this, &Figure::pointChanged, this, &Figure::slotUpdateFigure);
 
