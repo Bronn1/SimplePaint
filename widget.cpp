@@ -25,7 +25,9 @@ Widget::Widget(QWidget *parent) :
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);   // Отключаем скроллбар по вертикали
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+   // ui->graphicsView->
    //this->setSizePolicy();
+
 
     timer = new QTimer();
     connect(timer, &QTimer::timeout, this, &Widget::slotTimer);
