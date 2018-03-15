@@ -3,6 +3,7 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsScene>
+#include <QVector>
 
 #include "figure.h"
 #include "line.h"
@@ -23,10 +24,12 @@ public:
         LineType,
         SquareType,
         RombType,
+        PenType
     };
 public slots:
     void slotColorChanged(const QString color);
     void slotWidthChanged(const int width);
+    void slotDeletItem();
 signals:
     void typeFigureChanged(); // сигнал об изм фигуры
 private:
@@ -35,7 +38,9 @@ private:
 private:
     int m_typeFigure;
     Figure *tempFigure;
-    Line *line;
+    Line *tempLine;
+    QPointF previousPoint;
+    QVector<QGraphicsItem*> drawElements;
 
 };
 

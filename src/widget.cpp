@@ -22,11 +22,10 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
     scene = new PaintScene();
     ui->graphicsView->setScene(scene);
+  // ui->graphicsView->resize(1900, 860);
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
-    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);   // Отключаем скроллбар по вертикали
-    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-   // ui->graphicsView->
-   //this->setSizePolicy();
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);   // Отключаем скроллбар по вертикали
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
 
     timer = new QTimer();
@@ -37,6 +36,7 @@ Widget::Widget(QWidget *parent) :
 
     connect(this, &Widget::colorChanged, scene, &PaintScene::slotColorChanged);
     connect(this, &Widget::widthChanged, scene, &PaintScene::slotWidthChanged);
+    connect(this, &Widget::signalDeleteLast, scene,  &PaintScene::slotDeletItem);
 
     createAction();
     createMenus();
@@ -44,8 +44,6 @@ Widget::Widget(QWidget *parent) :
     QPixmap ic(":/icon/icon.png");
     setWindowTitle("Simple Paint");
     setWindowIcon(ic);
-   // this->setStyleSheet("QWidget { background-color: yellow }");
-  //  this->setStyleSheet("QWidget { background-color: rgba(0, 255, 255, 255); }");
 }
 
 Widget::~Widget()
@@ -57,6 +55,7 @@ void Widget::resizeEvent(QResizeEvent *event)
 {
     timer->start(100);
     QWidget::resizeEvent(event);
+    qDebug() << "resize";
 }
 
 void Widget::createMenus()
@@ -72,7 +71,10 @@ void Widget::createAction()
 {
     saveAction = new QAction(tr("&Save"), this);
     loadAction = new QAction(tr("&Load Image"), this);
+    deleteLastItem = new QShortcut(this);
+    deleteLastItem->setKey(Qt::CTRL + Qt::Key_Z);
 
+    connect(deleteLastItem, &QShortcut::activated, this, &Widget::slotDeleteLastItem);
     connect(saveAction, &QAction::triggered, this, &Widget::slotShowSaveMenu );
     connect(loadAction, &QAction::triggered, this, &Widget::slotShowLoadMenu);
 }
@@ -88,7 +90,7 @@ void Widget::slotGetCustomScreen(int x, int y, int w, int h)
 void Widget::slotTimer()
 {
     timer->stop();
-
+    qDebug() << " ";
     scene->setSceneRect(0,0, ui->graphicsView->width() - 2, ui->graphicsView->height() - 2);
 }
 
@@ -105,7 +107,7 @@ void Widget::on_LineButton_clicked()
 
 void Widget::on_comboBox_currentIndexChanged(const QString &arg1)
 {
-    qDebug() << "shit" + arg1 ;
+    qDebug() << "color " + arg1 ;
     emit colorChanged(arg1);
 }
 
@@ -120,15 +122,6 @@ void Widget::on_horizontalSlider_sliderMoved(int position)
     emit widthChanged(position);
 }
 
-void Widget::on_horizontalSlider_sliderPressed()
-{
-    qDebug() << "xep";
-}
-
-void Widget::on_radioButton_clicked(bool checked)
-{
-    qDebug() << checked;
-}
 
 void Widget::slotShowSaveMenu()
 {
@@ -139,6 +132,11 @@ void Widget::slotShowSaveMenu()
 
     auto paintedToPix = QPixmap::grabWidget(ui->graphicsView);
     paintedToPix.save(filepath);
+}
+
+void Widget::slotDeleteLastItem()
+{
+   emit signalDeleteLast();
 }
 
 void Widget::slotShowLoadMenu()
@@ -163,14 +161,15 @@ void Widget::on_screenshotButton_clicked()
     }
     else {
         this->hide();
-        QScreen *screen = QApplication::primaryScreen();    // Берём объект экрана
+        QScreen *screen = QApplication::primaryScreen();// Берём объект экрана
         QPixmap screen1 = screen->grabWindow( 0 );
         scene->addPixmap(screen1);
         this->show();
     }
-
 }
 
 
-
-
+void Widget::on_sPenButton_clicked(bool checked)
+{
+    if(checked) scene->setTypeFigure(PaintScene::PenType);
+}

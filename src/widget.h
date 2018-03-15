@@ -3,8 +3,8 @@
 
 #include <QWidget>
 #include <QTimer>
+#include<QShortcut>
 #include <QResizeEvent>
-
 
 
 #include "paintscene.h"
@@ -28,8 +28,8 @@ public slots:
 
 signals:
     void colorChanged(const QString color);
-
     void  widthChanged(const int width);
+    void signalDeleteLast();
 
 
 private:
@@ -40,33 +40,22 @@ private:
    void createAction();
 
 
-
 private slots:
-   void slotTimer();
-
-
-    void on_squareButton_clicked();
-
+    void on_squareButton_clicked(); // slots for buttons
     void on_LineButton_clicked();
-
     void on_comboBox_currentIndexChanged(const QString &arg1);
-
     void on_rombPushButton_clicked();
-
     void on_horizontalSlider_sliderMoved(int position);
 
-    void on_horizontalSlider_sliderPressed();
+    void on_screenshotButton_clicked();
+    void on_sPenButton_clicked(bool checked);
 
-    void on_radioButton_clicked(bool checked);
-
+    void slotTimer(); // usual slots
 
     void slotShowSaveMenu();
+    void slotDeleteLastItem();
 
     void slotShowLoadMenu();
-
-
-    void on_screenshotButton_clicked();
-
 
 private:
     Ui::Widget *ui;
@@ -75,6 +64,7 @@ private:
     QMenu *filemenu;
     QAction *saveAction;
     QAction *loadAction;
+    QShortcut *deleteLastItem;
 };
 
 #endif // WIDGET_H

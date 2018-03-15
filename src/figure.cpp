@@ -1,10 +1,12 @@
 #include "figure.h"
 #include <QPointer>
 
+
 Figure::Figure(QPointF point, QObject *parent) : QObject(parent), QGraphicsItem()
 {
     this->setStartPoint(mapFromScene(point));
     this->setEndPoint(mapFromScene(point));
+    this->setPenOptions();
     setFlags(ItemIsSelectable|ItemSendsGeometryChanges);
 
     connect(this, &Figure::pointChanged, this, &Figure::slotUpdateFigure);
@@ -53,3 +55,12 @@ QRectF Figure::boundingRect() const
                   qAbs(endPoint().x() - startPoint().x()) + 10,
                   qAbs(endPoint().y() - startPoint().y()) + 10);
 }
+
+void Figure::setPenOptions()
+{
+    penOption.setWidth(penWidth);
+    penOption.setColor(penColor);
+}
+
+int Figure::penWidth = 10;
+QString Figure::penColor = "Qt::black";

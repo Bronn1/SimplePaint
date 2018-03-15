@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QGraphicsItem>
+#include <QPen>
 
 class Figure : public QObject, public QGraphicsItem
 {
@@ -30,9 +31,15 @@ public slots:
     void slotUpdateFigure();
 private:
     QRectF boundingRect() const;
+    void setPenOptions();
 private:
     QPointF m_startPoint;
     QPointF m_endPoint;
+protected:
+    QPen penOption;
+public:
+    static int penWidth;
+    static QString penColor;
 };
 
 #endif // FIGURE_H
